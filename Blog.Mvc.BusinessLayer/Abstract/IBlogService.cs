@@ -16,5 +16,7 @@ namespace DakaBlog.Mvc.BusinessLayer.Abstract
 		Blog GetById(int id);
 		List<Blog> GetBlogListWithCategory();
 		List<Blog> GetBlogByWriter(int id);
+		List<Blog> GetBlogByID(int id);
+		List<Blog> GetLast3Blog();
 	}
 }

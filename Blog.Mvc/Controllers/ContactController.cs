@@ -1,4 +1,5 @@
-﻿using DakaBlog.Mvc.BusinessLayer.Concrete;
+﻿using DakaBlog.Mvc.BusinessLayer.Abstract;
+using DakaBlog.Mvc.BusinessLayer.Concrete;
 using DakaBlog.Mvc.DataAccesLayer.EntityFramework;
 using DakaBlog.Mvc.EntityLayer.Concrete;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +8,13 @@ namespace DakaBlog.Mvc.Controllers
 {
 	public class ContactController : Controller
 	{
-		ContactManager cm = new ContactManager(new EfContactRepository());
-		[HttpGet]
+		//ContactManager cm = new ContactManager(new EfContactRepository());
+		private readonly IContactService contactService;
+        public ContactController(IContactService contactService)
+        {
+            this.contactService = contactService;
+        }
+        [HttpGet]
 		public IActionResult Index()
 		{
 			return View();
@@ -18,7 +24,7 @@ namespace DakaBlog.Mvc.Controllers
 		{
 			p.ContactDate=	DateTime.Parse(DateTime.Now.ToShortDateString());
 			p.ContactStatus = true;
-			cm.ContactAdd(p);
+            contactService.ContactAdd(p);
 			return RedirectToAction("Index","Blog");
 		}
 	}
