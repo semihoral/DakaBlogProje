@@ -1,4 +1,5 @@
-﻿using DakaBlog.Mvc.BusinessLayer.Concrete;
+﻿using DakaBlog.Mvc.BusinessLayer.Abstract;
+using DakaBlog.Mvc.BusinessLayer.Concrete;
 using DakaBlog.Mvc.DataAccesLayer.EntityFramework;
 using DakaBlog.Mvc.EntityLayer.Concrete;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +8,13 @@ namespace DakaBlog.Mvc.Controllers
 {
 	public class CommentController : Controller
 	{
-		CommentManager cm = new CommentManager(new EfCommentRepository());
-		public IActionResult Index()
+		//CommentManager cm = new CommentManager(new EfCommentRepository());
+		private readonly ICommentService commentService;
+        public CommentController(ICommentService commentService)
+        {
+            this.commentService = commentService;
+        }
+        public IActionResult Index()
 		{
 			return View();
 		}
@@ -23,12 +29,12 @@ namespace DakaBlog.Mvc.Controllers
 			p.CommentDate= DateTime.Parse(DateTime.Now.ToShortDateString());
 			p.CommentStatus = true;
 			p.BlogId = 13;
-			cm.CommentAdd(p);
+            commentService.CommentAdd(p);
 			return PartialView();
 		}
 		public PartialViewResult CommentListByBlog(int id)
 		{
-			var values = cm.GetList(id);
+			var values = commentService.GetList(id);
 			return PartialView(values);
 		}
 	}

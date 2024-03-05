@@ -1,22 +1,30 @@
-﻿using DakaBlog.Mvc.BusinessLayer.Concrete;
+﻿using DakaBlog.Mvc.BusinessLayer.Abstract;
+using DakaBlog.Mvc.BusinessLayer.Concrete;
 using DakaBlog.Mvc.BusinessLayer.ValidationRules;
 using DakaBlog.Mvc.DataAccesLayer.EntityFramework;
 using DakaBlog.Mvc.EntityLayer.Concrete;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DakaBlog.Mvc.Controllers
 {
 	public class RegisterController : Controller
 	{
-		WriterManager wm = new WriterManager(new EfWriterRepository());
-
-		[HttpGet]
+		//WriterManager wm = new WriterManager(new EfWriterRepository());
+		private readonly IwriterService writerService;
+        public RegisterController(IwriterService writerService)
+        {
+            this.writerService = writerService;
+        }
+        [HttpGet]
+		[AllowAnonymous]
 		public IActionResult Index()
 		{
 			return View();
 		}
 		[HttpPost]
+		[AllowAnonymous]
 		public IActionResult Index(Writer p)
 		{
 			WriterValidator wv = new WriterValidator();
@@ -25,7 +33,7 @@ namespace DakaBlog.Mvc.Controllers
 			{
 				p.WriterStatus = true;
 				p.WriterAbout = "DakaProje Test";
-				wm.WriterAdd(p);
+				writerService.WriterAdd(p);
 				return RedirectToAction("Index", "Blog");
 			}
 			else 
